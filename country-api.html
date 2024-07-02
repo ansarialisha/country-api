@@ -4,12 +4,113 @@
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
     <body>
+
         <div x-data="{ darkMode: false, imageUrl: 'sun.png' }" class="main-parent" :class="{ 'dark-theme': darkMode }">
-            <div class="child-1">
-                <img :src="imageUrl" @click="darkMode = !darkMode; imageUrl = darkMode ? 'moon.png' : 'sun.png'">
+            <div class="child-1 img">
+                <img :src="imageUrl" @click="darkMode = !darkMode; imageUrl = darkMode ? 'moon.png' : 'sun.png'" class="img">
                 <h2>Explore.</h2>
             </div>
+
+            <div x-data="countryApiComponent()">
+                <select @change="getcountrydetails($el)" name="country">
+                    <option value="0">select any country</option>
+                    <option value="IN">India</option>
+                    <option value="AU">Australia</option>
+                    <option value="IS">Iceland</option>
+                    <option value="ML">Mali</option>
+                    <option value="CA">Canada</option>
+                    <option value="GY">Guyana</option>
+                    <option value="KR">South Korea</option>
+                    <option value="MU">Mauritius</option>
+                    <option value="MV">Maldives</option>
+                    <option value="NZ">New Zealand</option>
+                    <option value="IT">Italy</option>
+                </select>
+                <legend x-show="showCountryflag"  class="child-2">
+                    <div class="child-3">
+                        <div class="flex" class="img"><img :src="Flagurl" height="150px" width="100%"></div>
+                    </div>
+                    <br>
+                    <div><span class="bold">country Name:</span><span x-text="countryname"></span></div>
+                    <div><span class="bold">capital city:</span><span x-text="countrycapital"></span></div>
+                    <div><span class="bold">population:</span><span x-text="population"></span></div>
+                    <div><span class="bold">Driving Side:</span><span x-text="DrivingSide"></span></div>
+                    <br>
+                    <div><span class="bold">Continents:</span><span x-text="Continents"></span></div>
+                    <div><span class="bold">Currency:</span><span x-text="Currency"></span></div>
+                    <div><span class="bold">Currency Symbol:</span><span x-text="Currencysymbol"></span></div>
+                    <div><span class="bold">Languages:</span><span x-text="Languages"></span></div>
+                    <div><span class="bold">:</span><span x-text=""></span></div>
+                    <div><span class="bold">:</span><span x-text=""></span></div>
+                    <div><span class="bold">:</span><span x-text=""></span></div>
+
+                </legend>
+            </div>
         </div>
-       
+        <script>
+            function countryApiComponent(){
+                return {
+                    showCountryflag: false,
+                    cca2: '',
+                    countryname: '',
+                    Flagurl: '',
+                    countrycapital: '',
+                    population: '',
+                    DrivingSide: '',
+                    Continents: '',
+                    // Currency: '',
+                    // Currencysymbol: '',
+                    // Languages: '',
+                    apiEndPoint: 'https://restcountries.com/v3.1/alpha/',
+                    init: function(){
+                        //this.callApi();
+                    },
+
+                    getcountrydetails: function(el){
+                        //console.log(el.value);
+
+                        if (el.value == 0) {
+                            console.log('no country selected');
+                            this.showCountryflag = false;
+                            return;
+
+                        }
+                        this.showCountryflag = true;
+                        this.cca2 = el.value;
+                        this.callApi()
+                            .then(countryData => {
+                                console.log(countryData);
+                                this.countryname = countryData[0]['name'].common;
+                                this.countrycapital = countryData[0].capital[0];
+                                this.Flagurl = countryData[0]['flags'].png;
+                                this.population = countryData[0].population;
+                                this.DrivingSide = countryData[0].car.side;
+                                this.Continents = countryData[0].continents[0];
+                                // this.Currency = countryData[0].currencies.name;
+                                // this.Currencysymbol = countryData[0].currencies.symbol;
+                                // this.Languages = countryData[0].languages;
+
+                               
+                            });
+                    },
+
+                    callApi: async function(){
+                        try{
+                            const response = await fetch(this.apiEndPoint + this.cca2);
+
+                            if(!response.ok) {
+                                throw new Error('failed to fetch data');
+                            }
+                            const data = await response.json();
+                            return data;
+                        } catch(error){
+                            console.error('Error fetching data:',error);
+                            throw error;
+                        }
+                    },
+                }
+            }
+            
+        </script>
     </body>
 </html>
