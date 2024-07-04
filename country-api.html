@@ -12,7 +12,7 @@
             </div>
 
             <div x-data="countryApiComponent()">
-                <select @change="getcountrydetails($el)" name="country">
+                <select @change="getcountrydetails($el)" :class="{ 'dark-select': darkMode }">
                     <option value="0">select any country</option>
                     <option value="IN">India</option>
                     <option value="AU">Australia</option>
@@ -27,23 +27,32 @@
                     <option value="IT">Italy</option>
                 </select>
                 <legend x-show="showCountryflag"  class="child-2">
+                    <br>
                     <div class="child-3">
-                        <div class="flex" class="img"><img :src="Flagurl" height="150px" width="100%"></div>
+                        <div class="flex" class="img"><img :src="Flagurl" class="flag"></div>
                     </div>
                     <br>
-                    <div><span class="bold">country Name:</span><span x-text="countryname"></span></div>
-                    <div><span class="bold">capital city:</span><span x-text="countrycapital"></span></div>
-                    <div><span class="bold">population:</span><span x-text="population"></span></div>
-                    <div><span class="bold">Driving Side:</span><span x-text="DrivingSide"></span></div>
+                    <div><span class="bold">Country Name:</span> <span x-text="Countryname"></span></div>
+                    <div><span class="bold">Capital City:</span> <span x-text="CountryCapital"></span></div>
+                    <div><span class="bold">Population:</span> <span x-text="Population"></span></div>
+                    <div><span class="bold">Driving Side:</span> <span x-text="DrivingSide"></span></div>
                     <br>
-                    <div><span class="bold">Continents:</span><span x-text="Continents"></span></div>
-                    <div><span class="bold">Currency:</span><span x-text="Currency"></span></div>
-                    <div><span class="bold">Currency Symbol:</span><span x-text="Currencysymbol"></span></div>
-                    <div><span class="bold">Languages:</span><span x-text="Languages"></span></div>
-                    <div><span class="bold">:</span><span x-text=""></span></div>
-                    <div><span class="bold">:</span><span x-text=""></span></div>
-                    <div><span class="bold">:</span><span x-text=""></span></div>
-
+                    <div><span class="bold">Continents:</span> <span x-text="Continents"></span></div>
+                    <div><span class="bold">Currency:</span> <span x-text="Currency"></span></div>
+                    <div><span class="bold">Currency Symbol:</span> <span x-text="Currencysymbol"></span></div>
+                    <div><span class="bold">Languages:</span> <span x-text="Languages"></span></div>
+                    <br>
+                    <div><span class="bold">Area:</span> <span x-text="Area"></span></div>
+                    <div><span class="bold">TimeZones:</span> <span x-text="TimeZones"></span></div>
+                    <div><span class="bold">Latitude:</span> <span x-text="Latitude"></span></div>
+                    <div><span class="bold">Longitude:</span> <span x-text="Longitude"></span></div>
+                    <br>
+                    <div><span class="bold">Abbreviations:</span> <span x-text="Abbreviations"></span></div>
+                    <div><span class="bold">Dialling Code:</span> <span x-text="DiallingCode"></span></div>
+                    <div><span class="bold">Top-Level Domain:</span> <span x-text="tld"></span></div>
+                    <div><span class="bold">Status:</span> <span x-text="Status"></span></div>
+                    <br>
+                    <div class="flex" class="img" x-show="ShowCoatOfArms"><span class="bold">Coat Of Arms:</span><img :src="CoatOfArms" class="CoatOfArms"></div>
                 </legend>
             </div>
         </div>
@@ -52,15 +61,25 @@
                 return {
                     showCountryflag: false,
                     cca2: '',
-                    countryname: '',
+                    Countryname: '',
                     Flagurl: '',
-                    countrycapital: '',
-                    population: '',
+                    CountryCapital: '',
+                    Population: '',
                     DrivingSide: '',
                     Continents: '',
-                    // Currency: '',
-                    // Currencysymbol: '',
-                    // Languages: '',
+                    Area: '',
+                    Currency: '',
+                    Currencysymbol: '',
+                    Languages: '',
+                    TimeZones: '',
+                    Abbreviations: '',
+                    Latitude: '',
+                    Longitude: '',
+                    DiallingCode: '',
+                    tld: '',
+                    Status: '',
+                    CoatOfArms: '',
+                    ShowCoatOfArms: false,
                     apiEndPoint: 'https://restcountries.com/v3.1/alpha/',
                     init: function(){
                         //this.callApi();
@@ -72,25 +91,34 @@
                         if (el.value == 0) {
                             console.log('no country selected');
                             this.showCountryflag = false;
+                            ShowCoatOfArms: false;
                             return;
 
                         }
                         this.showCountryflag = true;
+                        this.ShowCoatOfArms = true;
                         this.cca2 = el.value;
                         this.callApi()
-                            .then(countryData => {
-                                console.log(countryData);
-                                this.countryname = countryData[0]['name'].common;
-                                this.countrycapital = countryData[0].capital[0];
-                                this.Flagurl = countryData[0]['flags'].png;
-                                this.population = countryData[0].population;
-                                this.DrivingSide = countryData[0].car.side;
-                                this.Continents = countryData[0].continents[0];
-                                // this.Currency = countryData[0].currencies.name;
-                                // this.Currencysymbol = countryData[0].currencies.symbol;
-                                // this.Languages = countryData[0].languages;
-
-                               
+                            .then(CountryData => {
+                                console.log(CountryData);
+                                this.Countryname = CountryData[0]['name'].common;
+                                this.CountryCapital = CountryData[0].capital[0];
+                                this.Flagurl = CountryData[0]['flags'].png;
+                                this.Population = CountryData[0].population;
+                                this.DrivingSide = CountryData[0].car.side;
+                                this.Continents = CountryData[0].continents[0];
+                                this.Area = CountryData[0].area;
+                                this.Currency = Object.keys(CountryData[0].currencies); 
+                                this.Currencysymbol = CountryData[0].currencies[Object.keys(CountryData[0].currencies)[0]].symbol;
+                                this.Languages = Object.values(CountryData[0].languages);
+                                this.TimeZones = CountryData[0].timezones[0];
+                                this.Abbreviations = CountryData[0].altSpellings[0];
+                                this.Latitude = CountryData[0].capitalInfo.latlng[0];
+                                this.Longitude = CountryData[0].capitalInfo.latlng[1];
+                                this.DiallingCode = Object.values(CountryData[0].idd);
+                                this.tld = CountryData[0].tld[0];
+                                this.Status = CountryData[0].status;
+                                this.CoatOfArms = CountryData[0].coatOfArms.png;
                             });
                     },
 

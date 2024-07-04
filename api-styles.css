@@ -5,7 +5,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #F0F0F0;
+    background-color: #afb4ad;
 }
 .main-parent{
     min-height: 100vh;
@@ -45,4 +45,28 @@ h2{
 }
 .bold{
     font-weight: 900;
+}
+select{
+    height: 30px;
+    width: 70%;
+    font-size:15px;
+    font-weight: 700;
+}
+.dark-select {
+    background-color: #1E2C41;
+    color: #FFFFFF; 
+  }
+.flag{
+    height: 150px;
+    width: 100%;
+    border-radius: 10px;
+}
+option{
+    font-size:15px;
+    font-weight: 600;
+}
+.CoatOfArms{
+    height: 180px;
+    width: 80%;
+    margin-left: 25px;
 }
